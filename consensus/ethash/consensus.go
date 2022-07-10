@@ -331,6 +331,7 @@ func (ethash *Ethash) verifyHeader(chain consensus.ChainHeaderReader, header, pa
 // given the parent block's time and difficulty.
 func (ethash *Ethash) CalcDifficulty(chain consensus.ChainHeaderReader, time uint64, parent *types.Header) *big.Int {
 	return CalcDifficulty(chain.Config(), time, parent)
+	// return big.NewInt(0)
 }
 
 // CalcDifficulty is the difficulty adjustment algorithm. It returns
@@ -441,43 +442,45 @@ func calcDifficultyHomestead(time uint64, parent *types.Header) *big.Int {
 	//         (parent_diff / 2048 * max(1 - (block_timestamp - parent_timestamp) // 10, -99))
 	//        ) + 2^(periodCount - 2)
 
-	bigTime := new(big.Int).SetUint64(time)
-	bigParentTime := new(big.Int).SetUint64(parent.Time)
+	// bigTime := new(big.Int).SetUint64(time)
+	// bigParentTime := new(big.Int).SetUint64(parent.Time)
 
-	// holds intermediate values to make the algo easier to read & audit
-	x := new(big.Int)
-	y := new(big.Int)
+	// // holds intermediate values to make the algo easier to read & audit
+	// x := new(big.Int)
+	// y := new(big.Int)
 
-	// 1 - (block_timestamp - parent_timestamp) // 10
-	x.Sub(bigTime, bigParentTime)
-	x.Div(x, big10)
-	x.Sub(big1, x)
+	// // 1 - (block_timestamp - parent_timestamp) // 10
+	// x.Sub(bigTime, bigParentTime)
+	// x.Div(x, big10)
+	// x.Sub(big1, x)
 
-	// max(1 - (block_timestamp - parent_timestamp) // 10, -99)
-	if x.Cmp(bigMinus99) < 0 {
-		x.Set(bigMinus99)
-	}
-	// (parent_diff + parent_diff // 2048 * max(1 - (block_timestamp - parent_timestamp) // 10, -99))
-	y.Div(parent.Difficulty, params.DifficultyBoundDivisor)
-	x.Mul(y, x)
-	x.Add(parent.Difficulty, x)
+	// // max(1 - (block_timestamp - parent_timestamp) // 10, -99)
+	// if x.Cmp(bigMinus99) < 0 {
+	// 	x.Set(bigMinus99)
+	// }
+	// // (parent_diff + parent_diff // 2048 * max(1 - (block_timestamp - parent_timestamp) // 10, -99))
+	// y.Div(parent.Difficulty, params.DifficultyBoundDivisor)
+	// x.Mul(y, x)
+	// x.Add(parent.Difficulty, x)
 
-	// minimum difficulty can ever be (before exponential factor)
-	if x.Cmp(params.MinimumDifficulty) < 0 {
-		x.Set(params.MinimumDifficulty)
-	}
-	// for the exponential factor
-	periodCount := new(big.Int).Add(parent.Number, big1)
-	periodCount.Div(periodCount, expDiffPeriod)
+	// // minimum difficulty can ever be (before exponential factor)
+	// if x.Cmp(params.MinimumDifficulty) < 0 {
+	// 	x.Set(params.MinimumDifficulty)
+	// }
+	// // for the exponential factor
+	// periodCount := new(big.Int).Add(parent.Number, big1)
+	// periodCount.Div(periodCount, expDiffPeriod)
 
-	// the exponential factor, commonly referred to as "the bomb"
-	// diff = diff + 2^(periodCount - 2)
-	if periodCount.Cmp(big1) > 0 {
-		y.Sub(periodCount, big2)
-		y.Exp(big2, y, nil)
-		x.Add(x, y)
-	}
-	return x
+	// // the exponential factor, commonly referred to as "the bomb"
+	// // diff = diff + 2^(periodCount - 2)
+	// if periodCount.Cmp(big1) > 0 {
+	// 	y.Sub(periodCount, big2)
+	// 	y.Exp(big2, y, nil)
+	// 	x.Add(x, y)
+	// }
+	// return x
+
+	return big.NewInt(0)
 }
 
 // calcDifficultyFrontier is the difficulty adjustment algorithm. It returns the

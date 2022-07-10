@@ -95,37 +95,38 @@ func CalcDifficultyHomesteadU256(time uint64, parent *types.Header) *big.Int {
 		- num = block.number
 	*/
 
-	pDiff, _ := uint256.FromBig(parent.Difficulty) // pDiff: pdiff
-	adjust := pDiff.Clone()
-	adjust.Rsh(adjust, difficultyBoundDivisor) // adjust: pDiff / 2048
+	// pDiff, _ := uint256.FromBig(parent.Difficulty) // pDiff: pdiff
+	// adjust := pDiff.Clone()
+	// adjust.Rsh(adjust, difficultyBoundDivisor) // adjust: pDiff / 2048
 
-	x := (time - parent.Time) / 10 // (time - ptime) / 10)
-	var neg = true
-	if x == 0 {
-		x = 1
-		neg = false
-	} else if x >= 100 {
-		x = 99
-	} else {
-		x = x - 1
-	}
-	z := new(uint256.Int).SetUint64(x)
-	adjust.Mul(adjust, z) // adjust: (pdiff / 2048) * max((time - ptime) / 10 - 1, 99)
-	if neg {
-		pDiff.Sub(pDiff, adjust) // pdiff - pdiff / 2048 * max((time - ptime) / 10 - 1, 99)
-	} else {
-		pDiff.Add(pDiff, adjust) // pdiff + pdiff / 2048 * max((time - ptime) / 10 - 1, 99)
-	}
-	if pDiff.LtUint64(minimumDifficulty) {
-		pDiff.SetUint64(minimumDifficulty)
-	}
-	// for the exponential factor, a.k.a "the bomb"
-	// diff = diff + 2^(periodCount - 2)
-	if periodCount := (1 + parent.Number.Uint64()) / expDiffPeriodUint; periodCount > 1 {
-		expFactor := adjust.Lsh(adjust.SetOne(), uint(periodCount-2))
-		pDiff.Add(pDiff, expFactor)
-	}
-	return pDiff.ToBig()
+	// x := (time - parent.Time) / 10 // (time - ptime) / 10)
+	// var neg = true
+	// if x == 0 {
+	// 	x = 1
+	// 	neg = false
+	// } else if x >= 100 {
+	// 	x = 99
+	// } else {
+	// 	x = x - 1
+	// }
+	// z := new(uint256.Int).SetUint64(x)
+	// adjust.Mul(adjust, z) // adjust: (pdiff / 2048) * max((time - ptime) / 10 - 1, 99)
+	// if neg {
+	// 	pDiff.Sub(pDiff, adjust) // pdiff - pdiff / 2048 * max((time - ptime) / 10 - 1, 99)
+	// } else {
+	// 	pDiff.Add(pDiff, adjust) // pdiff + pdiff / 2048 * max((time - ptime) / 10 - 1, 99)
+	// }
+	// if pDiff.LtUint64(minimumDifficulty) {
+	// 	pDiff.SetUint64(minimumDifficulty)
+	// }
+	// // for the exponential factor, a.k.a "the bomb"
+	// // diff = diff + 2^(periodCount - 2)
+	// if periodCount := (1 + parent.Number.Uint64()) / expDiffPeriodUint; periodCount > 1 {
+	// 	expFactor := adjust.Lsh(adjust.SetOne(), uint(periodCount-2))
+	// 	pDiff.Add(pDiff, expFactor)
+	// }
+	// return pDiff.ToBig()
+	return big.NewInt(0)
 }
 
 // MakeDifficultyCalculatorU256 creates a difficultyCalculator with the given bomb-delay.
